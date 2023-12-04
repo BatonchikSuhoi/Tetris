@@ -1,0 +1,92 @@
+# Android
+# Build your Android project with Gradle.
+# Add steps that test, sign, and distribute the APK, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/android
+
+#trigger:
+#- master
+
+pool:
+  vmImage: 'ubuntu-20.04'
+
+steps:
+- task: JavaToolInstaller@0
+  inputs:
+    versionSpec: '17'
+    jdkArchitectureOption: 'x64'
+    jdkSourceOption: 'PreInstalled'
+#- task: JavaToolInstaller@0
+#  inputs:
+#    versionSpec: '8'
+#    jdkArchitectureOption: 'x64'
+#    jdkSourceOption: 'PreInstalled'
+#- task: CmdLine@2
+#  inputs:
+#    script: 'java --version'
+- task: Gradle@3
+  inputs:
+    gradleWrapperFile: 'gradlew'
+    gradleOptions: '-Xmx2048m'
+#    tasks: 'assembleRelease'
+    tasks: 'build'
+    publishJUnitResults: false
+    testResultsFiles: '**/TEST-*.xml'
+    javaHomeOption: 'JDKVersion'
+#    javaHomeOption: 'Path'
+#    jdkDirectory: '/usr/lib/jvm/temurin-8-jdk-amd64/'
+    sonarQubeRunAnalysis: false
+    spotBugsAnalysis: false
+    jdkVersionOption: '1.17'
+    workingDirectory: ''
+#- task: Gradle@2
+#  inputs:
+#    workingDirectory: ''
+#    gradleWrapperFile: 'gradlew'
+#    gradleOptions: '-Xmx3072m'
+#    publishJUnitResults: false
+#    testResultsFiles: '**/TEST-*.xml'
+#    tasks: 'assembleDebug'
+- task: AndroidSigning@3
+  inputs:
+    apkFiles: '**/*.apk'
+    apksignerKeystoreFile: 'lcf.keystore'
+    apksignerKeystorePassword: '$(keystorepass)'
+    apksignerKeystoreAlias: '$(alias)'
+    apksignerKeyPassword: '$(keypass)'
+- task: CmdLine@2
+  inputs:
+    script: 'ls'
+#- task: CmdLine@2
+#  inputs:
+#    script: 'ls /home/vsts/work/1/s/app/build/outputs/apk/debug/'
+- task: CmdLine@2
+  inputs:
+    script: 'ls /home/vsts/work/1/s/app/build/outputs/apk/release/'
+#- task: CopyFiles@2
+#  inputs:
+#    SourceFolder: '/home/vsts/work/1/s/app/build/outputs/apk/debug/'
+#    contents: '*.apk'
+#    targetFolder: '$(build.artifactStagingDirectory)'
+#    overWrite: true
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '/home/vsts/work/1/s/app/build/outputs/apk/release/'
+    contents: '*.apk'
+    targetFolder: '$(build.artifactStagingDirectory)'
+    overWrite: true
+#- task: PublishBuildArtifacts@1
+#  displayName: 'Copy into Artifact Package'
+#  inputs:
+#    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+#    ArtifactName: 'app-debug.apk'
+#    publishLocation: 'Container'
+- task: PublishBuildArtifacts@1
+  displayName: 'Copy into Artifact Package'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'app-release-unsigned.apk'
+    publishLocation: 'Container'
+- task: CmdLine@2
+  inputs:
+    script: 'curl -v -F "chat_id=$(id)" -F document=@app-release-unsigned.apk https://api.telegram.org/bot$(TOKEN)/sendDocument'
+    workingDirectory: '/home/vsts/work/1/s/app/build/outputs/apk/release/'
