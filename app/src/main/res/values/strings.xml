@@ -10,4 +10,5 @@
     <string name="current_score">Current score</string>
     <string name="maxoni">Я Максончик</string>
     <string name="maxoni_message">Привет, Максончик</string>
+    <string name="btn_back">BACK TO MENU</string>
 </resources>

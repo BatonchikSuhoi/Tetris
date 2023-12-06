@@ -63,6 +63,7 @@ class AppModel {
                     if(frameNumber != null){
                         if (frameNumber >= curBlock?.getFrameCount() as Int){
                             frameNumber = 0
+                            coordinate?.y = curBlock?.position?.y?.plus(1)
                         }
                     }
                 }

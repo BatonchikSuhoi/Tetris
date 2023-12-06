@@ -32,7 +32,10 @@ class MainActivity : AppCompatActivity() {
         val btnResetScore: Button = findViewById<Button>(R.id.btn_reset_score)
         val btnExit: Button = findViewById<Button>(R.id.btn_exit)
         val btnMaxoni: Button = findViewById(R.id.btn_maxoni)
+        val preferences = AppPreferences(this)
+
         tvHighScore = findViewById<TextView>(R.id.tv_high_score)
+        tvHighScore?.text = "High score: ${preferences.getHighScore()}"
 
         btnNewGame.setOnClickListener(this::onBtnNewGameClick)
         btnResetScore.setOnClickListener(this::onBtnResetScoreClick)

@@ -32,7 +32,7 @@ class TetrisView : View {
     companion object{
         private val DELAY = 500
         private val BLOCK_OFFSET = 2
-        private val FRAME_OFFSET_BASE = 10
+        private val FRAME_OFFSET_BASE = 5
     }
 
     private class ViewHandler(private val owner: TetrisView) : Handler() {
