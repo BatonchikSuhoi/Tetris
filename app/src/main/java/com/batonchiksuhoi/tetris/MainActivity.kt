@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -20,8 +21,9 @@ import com.batonchiksuhoi.tetris.storage.AppPreferences
 import com.batonchiksuhoi.tetris.ui.theme.TetrisTheme
 import com.google.android.material.snackbar.Snackbar
 import androidx.constraintlayout.widget.ConstraintLayout;
+import com.batonchiksuhoi.tetris.constants.ControlStates
 
-
+var controlState: Byte? = null
 var tvHighScore: TextView? = null
 
 class MainActivity : AppCompatActivity() {
@@ -33,6 +35,7 @@ class MainActivity : AppCompatActivity() {
         val btnExit: Button = findViewById<Button>(R.id.btn_exit)
         val btnMaxoni: Button = findViewById(R.id.btn_maxoni)
         val preferences = AppPreferences(this)
+        val controlSettingsSwitch: Switch = findViewById(R.id.control_switch)
 
         tvHighScore = findViewById<TextView>(R.id.tv_high_score)
         tvHighScore?.text = "High score: ${preferences.getHighScore()}"
@@ -41,6 +44,15 @@ class MainActivity : AppCompatActivity() {
         btnResetScore.setOnClickListener(this::onBtnResetScoreClick)
         btnExit.setOnClickListener(this::handleExitEvent)
         btnMaxoni.setOnClickListener(this::onBtnMaxoniClick)
+
+        controlSettingsSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            if(isChecked){
+                controlState = ControlStates.SCREEN.value
+            }else{
+                controlState = ControlStates.BUTTONS.value
+            }
+        }
+
     }
 
     private fun onBtnResetScoreClick(view: View) {
@@ -52,6 +64,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun onBtnNewGameClick(view: View) {
         val intent = Intent(this, GameActivity::class.java)
+        intent.putExtra("controlState",controlState)
         startActivity(intent)
     }
 

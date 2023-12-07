@@ -33,6 +33,7 @@ class TetrisView : View {
         private val DELAY = 500
         private val BLOCK_OFFSET = 2
         private val FRAME_OFFSET_BASE = 5
+        private val FAST_DELAY = 200
     }
 
     private class ViewHandler(private val owner: TetrisView) : Handler() {
@@ -43,7 +44,7 @@ class TetrisView : View {
                     if (owner.model!!.isGameOver()) {
                         owner.model?.endGame()
                         Toast.makeText(owner.activity, "Game over", Toast.LENGTH_LONG).show()
-                        //owner.activity!!.endGame()
+                            //owner.activity!!.endGame()
                     }
                     if (owner.model!!.isGameActive()) {
                         owner.setGameCommandWithDelay(AppModel.Motions.DOWN)

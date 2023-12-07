@@ -11,4 +11,7 @@
     <string name="maxoni">Я Максончик</string>
     <string name="maxoni_message">Привет, Максончик</string>
     <string name="btn_back">BACK TO MENU</string>
+    <string name="choose_buttons">Buttons touch</string>
+    <string name="choose_screen_touch">Screen touch</string>
+    <string name="select_control">Select control</string>
 </resources>

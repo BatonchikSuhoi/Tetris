@@ -6,8 +6,11 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import com.batonchiksuhoi.tetris.constants.ControlStates
 import com.batonchiksuhoi.tetris.models.AppModel
 import com.batonchiksuhoi.tetris.storage.AppPreferences
 import com.batonchiksuhoi.tetris.view.TetrisView
@@ -28,6 +31,8 @@ class GameActivity : AppCompatActivity() {
         appPreferences = AppPreferences(this)
         appModel.setPreferences(appPreferences)
 
+        val controlState : Byte = intent.getByteExtra("controlState", 0)
+        val layoutButtons = findViewById<LinearLayout>(R.id.layout_buttons)
         val btnRestart = findViewById<Button>(R.id.btn_restart)
         val btnLeft = findViewById<ImageButton>(R.id.btn_left)
         val btnRight = findViewById<ImageButton>(R.id.btn_right)
@@ -35,17 +40,25 @@ class GameActivity : AppCompatActivity() {
         val btnRotate = findViewById<ImageButton>(R.id.btn_spin)
         val btnBack = findViewById<Button>(R.id.btn_back)
 
+
         tvHighScore = findViewById<TextView>(R.id.tv_high_score)
         tvCurrentScore = findViewById<TextView>(R.id.tv_current_score)
         tetrisView = findViewById<TetrisView>(R.id.view_tetris)
         tetrisView.setActivity(this)
         tetrisView.setModel(appModel)
-        tetrisView.setOnTouchListener(this::onTetrisViewTouch)
+
+        if (controlState == ControlStates.SCREEN.value){
+            layoutButtons.isVisible = false
+            tetrisView.setOnTouchListener(this::onTetrisViewTouch)
+        }else{
+            layoutButtons.isVisible = true
+            btnLeft.setOnTouchListener(this::onLeftBtnTouch)
+            btnRight.setOnTouchListener(this::onRightBtnTouch)
+            btnDown.setOnTouchListener(this::onDownBtnTouch)
+            btnRotate.setOnTouchListener(this::onRotateBtnTouch)
+        }
+
         btnRestart.setOnClickListener(this::btnRestartClick)
-        btnLeft.setOnClickListener(this::onClickLeftBtn)
-        btnRight.setOnClickListener(this::onClickRightBtn)
-        btnDown.setOnTouchListener(this::onDownBtnTouch)
-        btnRotate.setOnClickListener(this::onClickRotateBtn)
         btnBack.setOnClickListener(this::onClickBackBtn)
 
         updateHighScore()
@@ -79,16 +92,32 @@ class GameActivity : AppCompatActivity() {
         return true
     }
 
-    private fun onClickLeftBtn(view: View){
+    private fun onLeftBtnTouch(view: View, event: MotionEvent): Boolean{
         moveTetromino(AppModel.Motions.LEFT)
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> view.setPressed(true)
+            MotionEvent.ACTION_UP -> view.setPressed(false)
+        }
+        return true
     }
 
-    private fun onClickRightBtn(view: View){
+    private fun onRightBtnTouch(view: View, event: MotionEvent): Boolean{
         moveTetromino(AppModel.Motions.RIGHT)
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> view.setPressed(true)
+            MotionEvent.ACTION_UP -> view.setPressed(false)
+        }
+        return true
     }
 
-    private fun onClickRotateBtn(view: View){
+
+    private fun onRotateBtnTouch(view: View, event: MotionEvent): Boolean{
         moveTetromino(AppModel.Motions.ROTATE)
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> view.setPressed(true)
+            MotionEvent.ACTION_UP -> view.setPressed(false)
+        }
+        return true
     }
 
     private fun onDownBtnTouch(view: View, event: MotionEvent): Boolean{

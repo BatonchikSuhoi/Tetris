@@ -44,7 +44,7 @@ class AppModel {
         if (isGameActive()) {
             resetField()
             var frameNumber: Int? = curBlock?.frameNumber
-            val coordinate: Point = Point()
+            val coordinate: Point? = Point()
             coordinate?.x = curBlock?.position?.x
             coordinate?.y = curBlock?.position?.y
 
